@@ -29,7 +29,7 @@ System::System( const string &configPath)
     mpCamera = make_shared<Camera>( G::fx, G::fy, G::cx, G::cy, G::bf ) ;
 
     // Create a tracker
-    //mpTracker = make_shared<Tracker>( mpCamera );
+    mpTracker = make_shared<Tracker>( mpCamera  );
 
     // Todo
     // create a backend
@@ -54,9 +54,7 @@ System::~System() {
 SE3d System::traceStereo(const cv::Mat& imLeft, const cv::Mat& imRight, const double& timestamp )
 {
     // invoke the Tracker to track the stereo
-    //return mpTracker->InsertStereo(imLeft, imRight, timestamp );
-    // Todo
-    return SE3d();
+    return mpTracker->InsertStereo(imLeft, imRight, timestamp );
 }
 
 void System::SetGroundTruthTrajectory( map<double, SE3d, std::less<double>, Eigen::aligned_allocator<SE3d>> & traj)

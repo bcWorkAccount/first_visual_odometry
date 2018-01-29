@@ -6,6 +6,10 @@
  * Email: shihezichen@live.cn
  * Created: 27th Jan, 2018
 */
+/**
+ * History:
+ *    29th Jan, 2018: Arthur.Chen, modify the structure of class
+ */
 
 
 #ifndef FIRSTVO_CAMERA_H
@@ -16,10 +20,11 @@
 namespace fvo {
 
 class Camera {
-public:
+public: // definitions
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     typedef std::shared_ptr<Camera> Ptr;
 
+public:   // properties
     float fx = 0;
     float fy = 0;
     float fx_inv = 0;
@@ -33,6 +38,7 @@ public:
     Matrix3f K = Matrix3f::Identity();     // intrinsics matrix
     Matrix3f K_inv = Matrix3f::Identity();  // inverse K
 
+public: // methods
     Camera ( const float &_fx, const float &_fy, const float &_cx, const float &_cy, const float _bf = 0 )
             :fx(_fx),  fy(_fy),  cx(_cx ) , cy(_cy), bf(_bf)
     {
