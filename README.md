@@ -35,7 +35,7 @@ We skip the groundtruth.txt parameters at this version of project because KITTI 
 We reference following open soruce framework when we deisign the system architecture of fvo project because it's the first visual odometry and our team are Newbie:
 - ORB-SLAM2 
 - slambook
-- YGZ-stereo 
+- ygz-stereo-inertial
 
 Contact me (shihezichen@live.cn) or Qianli (xxx) if you have any question.
 
