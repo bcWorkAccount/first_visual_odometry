@@ -6,6 +6,10 @@
  * Email: shihezichen@live.cn
  * Created: 27th Jan, 2018
 */
+/*
+ * History:
+ *    31st Jan,2018, Arthur.Chen, initial InsertStereo() funciton
+ */
 
 
 #include "fvo/Tracker.h"
@@ -36,9 +40,11 @@ namespace fvo{
 
         // Extract and compute stereo matching in current frame
         // Extract the keypoints and compute the descriptors
+        vector<cv::KeyPoint> leftKeyPoints, rightKeyPoints;
+        cv::Mat  leftDescriptors, rightDescriptors;
         // like: mpExtractor->detect(img, keypoints, descriptors);
-        mpExtractor->detect( mpCurrentFrame->mImgLeft, true );
-        mpExtractor->detect( mpCurrentFrame->mImgRight, true );
+        mpExtractor->detect( mpCurrentFrame->mImgLeft, leftKeyPoints, leftDescriptors);
+        mpExtractor->detect( mpCurrentFrame->mImgRight, rightKeyPoints, rightDescriptors );
 
         return SE3d();
     }

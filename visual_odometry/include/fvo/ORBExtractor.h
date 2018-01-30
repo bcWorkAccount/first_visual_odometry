@@ -84,10 +84,9 @@ namespace fvo {
         ORBExtractor(const KeyPointMethod& method );
         virtual ~ORBExtractor();
 
-        // detect features for frame
-        void detect( const cv::Mat& image,
-                     bool isComputeRotAndDesc = true  // need compute the rotation and descriptors ?
-        );
+        // detect features and descriptors for frame
+        void detect( cv::InputArray, vector<cv::KeyPoint>& output_keypoints,
+                     cv::OutputArray descriptors_array );
 
     private:  // methods
         // ORB detector with Quad Tree detect
@@ -101,6 +100,8 @@ namespace fvo {
                  const int &min_x, const int &max_x,
                  const int &min_y, const int &max_y,
                  const int &feature_num, const int &level);
+        // compute the available keypoints and descriptors from all keypoints in pyramid .
+        void computeDescriptors(vector<vector<cv::KeyPoint>>& all_keypoints, vector<cv::KeyPoint>& output_keypoints, cv::OutputArray descriptors_array);
     };
 
 

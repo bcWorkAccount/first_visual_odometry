@@ -1,17 +1,23 @@
 /**
 * This file is part of FVO.
 * ORBExtractor: fetch the features and descriptors
+ *    Using the QuadTree and Pyramid to do the features detect and descriptor computing
  *
  * Author: Arhtur.Chen
  * Email: shihezichen@live.cn
  * Created: 26th Jan, 2018
 */
+/*
+ * History:
+ *    31st Jan,2018, Arthur.Chen, complete the basic features detect and descriptors computing function
+ */
 
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
-// for Glboal Configure Parameters
+
 #include "fvo/ORBExtractor.h"
+// for Glboal Configure Parameters
 #include "fvo/GlobalConfig.h"
 
 namespace fvo {
@@ -20,6 +26,7 @@ namespace fvo {
     const int HALF_PATCH_SIZE = 15;//用于计算BIREF描述子的特征点邻域大小的一半
     const int EDGE_THRESHOLD = 19;//边缘阈值,靠近边缘阈值以内的像素是不检测特征点的。
 
+    // trainging pattern
     static int bit_pattern_31_[256 * 4] =
     {
         8, -3, 9, 5/*mean (0), correlation (0)*/,
@@ -311,7 +318,50 @@ namespace fvo {
         return cv::fastAtan2((float)m_01, (float)m_10);
     }
 
-    // calculate the keypoint oritentation
+
+    // compute the ORB descriptor
+    const float factor_pi = (float)(CV_PI / 180.f);
+    static void computeOrbDescriptor(const cv::KeyPoint& kpt,
+                                     const cv::Mat& img, const cv::Point* pattern,
+                                     uchar* desc)
+    {
+        float angle = (float)kpt.angle*factor_pi;
+        auto a = (float)cos(angle), b = (float)sin(angle);
+
+        const uchar* center = &img.at<uchar>(cvRound(kpt.pt.y), cvRound(kpt.pt.x));
+        const auto step = (int)img.step;
+#define GET_VALUE(idx) \
+        center[cvRound(pattern[idx].x*b + pattern[idx].y*a)*step + \
+               cvRound(pattern[idx].x*a - pattern[idx].y*b)]
+
+
+        for (int i = 0; i < 32; ++i, pattern += 16)
+        {
+            int t0, t1, val;
+            t0 = GET_VALUE(0); t1 = GET_VALUE(1);
+            val = t0 < t1;
+            t0 = GET_VALUE(2); t1 = GET_VALUE(3);
+            val |= (t0 < t1) << 1;
+            t0 = GET_VALUE(4); t1 = GET_VALUE(5);
+            val |= (t0 < t1) << 2;
+            t0 = GET_VALUE(6); t1 = GET_VALUE(7);
+            val |= (t0 < t1) << 3;
+            t0 = GET_VALUE(8); t1 = GET_VALUE(9);
+            val |= (t0 < t1) << 4;
+            t0 = GET_VALUE(10); t1 = GET_VALUE(11);
+            val |= (t0 < t1) << 5;
+            t0 = GET_VALUE(12); t1 = GET_VALUE(13);
+            val |= (t0 < t1) << 6;
+            t0 = GET_VALUE(14); t1 = GET_VALUE(15);
+            val |= (t0 < t1) << 7;
+
+            desc[i] = (uchar)val;
+        }
+
+#undef GET_VALUE
+    }
+
+    // calculate the keypoint orientation
     static void computeOrientation(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, const std::vector<int>& umax)
     {
         for (std::vector<cv::KeyPoint>::iterator keypoint = keypoints.begin(),
@@ -321,6 +371,14 @@ namespace fvo {
         }
     }
 
+    // calculate this level descriptors for this level image
+    static void computeLevelDescriptors(const cv::Mat& level_image,const vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors,
+                const vector<cv::Point>& pattern ) {
+        descriptors = cv::Mat::zeros( (int)keypoints.size(), 32, CV_8UC1 );
+        for( int i=0; i<keypoints.size(); i++ ) {
+            computeOrbDescriptor(keypoints[i], level_image, &pattern[0], descriptors.ptr( i ) );
+        }
+    }
     void ExtractorNode::divideNode(ExtractorNode &n1, ExtractorNode &n2, ExtractorNode &n3, ExtractorNode &n4)
     {
         const int half_x = ceil(static_cast<float>(UR_.x - UL_.x) / 2);
@@ -392,9 +450,7 @@ namespace fvo {
         mnDefaultFastTh = G::nInitTHFAST;
         mnMinFastTh = G::nMinTHFAST;
 
-        //
         // Initial pyramid
-        //
 
         // initial the pyramid scale factor vector
         mvecScaleFactor.resize(mnLevel);
@@ -458,22 +514,27 @@ namespace fvo {
 
     ORBExtractor::~ORBExtractor() {}
 
-    // detect features for image
-    void ORBExtractor::detect(const cv::Mat &image,  // the image to fetch
-                              bool needComputeRotAndDesc)  // need compute the rotation and descriptors ?
+    // detect features and descriptors for image
+    void ORBExtractor::detect(cv::InputArray image_array, vector<cv::KeyPoint>& output_keypoints,
+                              cv::OutputArray descriptors_array )
     {
-        mbComputeRotAndDesc = needComputeRotAndDesc;
+        if ( image_array.empty() )
+            return;
+        cv::Mat image = image_array.getMat();
+        // gray image
+        assert( image.type() == CV_8UC1);
 
 
-        if (mMethod == KeyPointMethod::OPENCV_ORB) {
+        if ( mMethod == KeyPointMethod::OPENCV_ORB) {
             // Todo
             std::vector<std::vector<cv::KeyPoint> > all_keypoints;
-
             // build the image pyramid
             computeImagePyramid(image);
-
-
+            // compute keypoints with quad tree
             computeKeyPointsQuadTree(image, all_keypoints);
+            // compute the descriptors for all keypoints
+            computeDescriptors( all_keypoints, output_keypoints, descriptors_array  );
+
         } else if (mMethod == KeyPointMethod::OPENCV_GFTT) {
             // Todo
             LOG(WARNING) << "Todo : ORBExtractor::detect()::OPENCV_GFTT" << endl;
@@ -838,5 +899,55 @@ namespace fvo {
         return result_keys;
     }
 
+    // compute descriptors for keypoints
+    void ORBExtractor::computeDescriptors(vector<vector<cv::KeyPoint>>& all_keypoints,
+                                          vector<cv::KeyPoint>& output_keypoints,
+                                          cv::OutputArray descriptors_array){
+        int keypoints_num = 0;
+        // the descriptors for all keypoints
+        cv::Mat descriptors;
 
+        // total keypoints in pyramid
+        for( int level=0; level < mnLevel; level++ ) {
+            keypoints_num += all_keypoints[level].size();
+        }
+        if ( keypoints_num == 0 ) {
+           descriptors_array.release();
+        }else{
+            descriptors_array.create(keypoints_num, 32, CV_8U );
+            descriptors = descriptors_array.getMat();
+        }
+
+
+        // 存储描述子的偏移量，用于分割不同尺度层
+        // the offset of each level descriptors
+        //   to add different level descriptor together
+        int offset = 0;
+        for( int level = 0; level < mnLevel; level++ ) {
+            vector<cv::KeyPoint>& keypoints = all_keypoints[level];
+            //当前尺度下图像特征点的数目
+            int kps_num_level = (int)keypoints.size();
+            if( kps_num_level == 0 ) {
+                continue;
+            }
+            // deal with current level image
+            cv::Mat image_level = mvecImagePyramid[level].clone();
+            GaussianBlur( image_level, image_level, cv::Size(7,7), 2,2 ,cv::BORDER_REFLECT_101);
+            // compute descriptors
+            cv::Mat desc = descriptors.rowRange( offset, offset + kps_num_level );
+            computeLevelDescriptors( image_level, keypoints, desc, mvecPattern );
+
+            offset += kps_num_level;
+
+            // 特征点坐标进行尺度处理，换算到当前图像中
+            if( level != 0 ) {
+                float scale = mvecScaleFactor[level];
+                for( auto &kp : keypoints ){
+                    kp.pt *= scale;
+                }
+            }
+            // 将完成好的特征点添加到输出vector中
+            output_keypoints.insert(output_keypoints.end(), keypoints.begin(), keypoints.end());
+        }
+    }
 }// end of namespace
