@@ -1,7 +1,6 @@
 # FVO - First Visual Odometry
-This is FVO SLAM, a stereo VO code. It is designed for stereo module like vi-sensor.It uses the ORBExtractor and LK optical flow as freont-end. It will add the backend in the future. Feel free to try it in datasets and your own sensors.
-
-The code is the first visual odometry and our team are all beginners, we can't guarantee its the best modularization and launch performance although we reference many open source frameworks and try our best to do it.
+This is FVO SLAM, a stereo VO code. It is designed for stereo module.It uses the ORBExtractor as freont-end. It will add the backend in the future. 
+The code is the first visual odometry and our team are all beginners, we can't guarantee its the best modularization and launch in high performance although we have referenced several open source frameworks and try our best to get to it.
 
 # Dependency
 If you are using ubuntu, all the dependencies are here:
