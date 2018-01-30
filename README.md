@@ -15,7 +15,8 @@ If you are using ubuntu, all the dependencies are here:
 # Compile
 You can compile all the things as following instruction.
 ```
-cd build-makes-debug
+mkdir cmake-build-debug
+cd cmake-build-debug
 cmake ..
 make 
 ```
