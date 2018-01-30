@@ -30,7 +30,9 @@ You can put stereo data into fvo-stere. We support the KITTI dataset now. Launch
 bin/fvo-stereo  ./config/kitti.yaml  ./Config/groundtruth.txt  <sequence_data_dir>
 ```
 to run the fvo stereo VO case.
+
 we have already provided the kitti.yaml at config directory and you should download the sequence of kitti data set and type it as the <sequence_data_dir> parameter, like: /home/hadoop/kitti_dataset/sequence/08 . 
+
 We skip the groundtruth.txt parameters at this version of project because KITTI doesn't provide these data so you can type any thing for it.
 
 # Other things
