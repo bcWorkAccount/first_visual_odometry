@@ -18,9 +18,11 @@ namespace fvo {
         int imageHeight = 480;
 
         // ORB Extractor 阈值
-        int initTHFAST = 20;     // 初始门限
-        int minTHFAST = 5;       // 纹理较差时使用的门限
-        int nFeatures = 100;     // 特征点数量
+        int nInitTHFAST = 20;     // Default Fast threshold
+        int nMinTHFAST = 5;       // min Fast threshold
+        int nFeatures = 100;     // features number
+        float fScaleFactor;  // Scale factor between two pyramid level
+        int nPyramidLevel;   // Pyramid level number
 
         // camera parameters
         float fx = 0;

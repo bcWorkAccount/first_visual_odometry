@@ -10,6 +10,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "fvo/Viewer.h"
+#include "fvo/GlobalConfig.h"
 
 namespace fvo{
 

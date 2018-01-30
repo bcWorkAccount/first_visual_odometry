@@ -9,6 +9,7 @@
 
 
 #include "fvo/Config.h"
+#include "fvo/GlobalConfig.h"
 
 namespace fvo{
 
@@ -40,6 +41,14 @@ namespace fvo{
         G::viewerHeight = settings["View.height"];
         G::viewerWidth  = settings["View.width"];
         G::UI_WIDTH = settings["View.UI_WIDTH"];
+
+        // Get the ORBExtractor parameters
+        G::nInitTHFAST = settings["ORBExtractor.initTHFAST"];
+        G::nMinTHFAST = settings["ORBExtractor.minTHFAST"];
+        G::nFeatures = settings["ORBExtractor.nFeatures"];
+        G::fScaleFactor = settings["ORBExtractor.nScaleFactor"];
+        G::nPyramidLevel = settings["ORBExtractor.nPyramidLevelNumber"];
+
     }
 
 

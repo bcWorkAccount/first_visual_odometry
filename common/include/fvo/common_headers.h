@@ -38,7 +38,6 @@
 #include <Eigen/Dense>  // linear algebra
 #include <Eigen/StdVector>
 
-// for Glboal Configure Parameters
-#include "fvo/GlobalConfig.h"
+
 
 #endif //FISTVO_COMMON_HEADERS_H

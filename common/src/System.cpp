@@ -10,7 +10,8 @@
 #include "fvo/System.h"
 // load the seeting fraom yaml
 #include "fvo/Config.h"
-
+// for Glboal Configure Parameters
+#include "fvo/GlobalConfig.h"
 
 using namespace std;
 using namespace fvo;

@@ -18,9 +18,11 @@ namespace fvo {
         extern int imageHeight;
 
         // ORB Extractor Threshold
-        extern int initTHFAST;  // initial threshold
-        extern int minTHFASE;   // minimal threshold for worse situation
+        extern int nInitTHFAST;  // initial Fast threshold
+        extern int nMinTHFAST;   // minimal Fast threshold for worse situation
         extern int nFeatures;   // number of features
+        extern float fScaleFactor;  // Scale factor between two pyramid level
+        extern int nPyramidLevel;   // Pyramid level number
 
         // images number
         extern int images;
