@@ -6,7 +6,6 @@
 #common: 
 	common classes for project. e.g. Frame, System, Viewer
 
-
 #introduction of classes:
 namespace: fvo, means "First Visual Odometry"
 
