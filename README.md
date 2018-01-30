@@ -32,7 +32,6 @@ to run the fvo stereo VO case.
 we have already provided the kitti.yaml at config directory and you should download the sequence of kitti data set and type it as the <sequence_data_dir> parameter, like: /home/hadoop/kitti_dataset/sequence/08 . 
 We skip the groundtruth.txt parameters at this version of project because KITTI doesn't provide these data so you can type any thing for it.
 
-
 # Other things
 We reference following open soruce framework when we deisign the system architecture of fvo project because it's the first visual odometry and our team are Newbie:
 - ORB-SLAM2 
@@ -40,6 +39,6 @@ We reference following open soruce framework when we deisign the system architec
 - ygz-stereo-inertial
 - openslam
 
-Contact me (shihezichen@live.cn) or Qianli (xxx) if you have any question.
+Contact me shihezichen( shihezichen@live.cn ) or whw12345( 493047586@qq.com ) if you have any question.
 
 
