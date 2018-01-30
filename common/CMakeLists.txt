@@ -9,5 +9,4 @@ add_library( fvo_common_libs
         src/System.cpp
         src/Viewer.cpp
 )
-
 target_link_libraries( fvo_common_libs ${THIRD_PARTY_LIBS}  fvo_vo_libs )
