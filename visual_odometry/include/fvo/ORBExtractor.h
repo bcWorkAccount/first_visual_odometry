@@ -46,6 +46,8 @@ namespace fvo {
         // the method to fetch the features
         typedef enum{
             OPENCV_ORB,     // OpenCV ORB
+            OPENCV_SURF,    // OPenCV SURF
+            QUAD_TREE_ORB,  // Quad Tree ORB
             OPENCV_GFTT,    // OpenCV's Good Feature to Track
         }KeyPointMethod;
 
@@ -57,8 +59,6 @@ namespace fvo {
     private:   // properties
         // the features fetch method
         KeyPointMethod  mMethod;
-        // need compute the Descriptors
-        bool mbComputeRotAndDesc = true;
         // training pattern
         std::vector<cv::Point> mvecPattern;
         // the max features number

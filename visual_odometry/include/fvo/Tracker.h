@@ -13,6 +13,7 @@
 #include "fvo/common_headers.h"
 #include "fvo/Camera.h"
 #include "fvo/ORBExtractor.h"
+#include "fvo/ORBMatcher.h"
 #include "fvo/Frame.h"
 
 
@@ -35,7 +36,10 @@ private:  // properties
     // Camera parameters
     Camera::Ptr mpCamera = nullptr;
     // ORB Extractor
-    ORBExtractor::Ptr mpExtractor = nullptr;
+    ORBExtractor::Ptr mpORBExtractor = nullptr;
+    // ORB Matcher
+    ORBMatcher::Ptr mpORBMatcher = nullptr;
+    // Frame
     Frame::Ptr mpCurrentFrame = nullptr;
     // current state of tracker
     TrackingState mState = SYSTEM_NOT_READY;
