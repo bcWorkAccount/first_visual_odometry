@@ -24,6 +24,10 @@ namespace fvo {
         extern float fScaleFactor;  // Scale factor between two pyramid level
         extern int nPyramidLevel;   // Pyramid level number
 
+        // ORB Matcher Threshold
+        const int ORBMatcher_TH_HIGH = 100;
+        const int ORBMatcher_TH_LOW = 50;
+
         // images number
         extern int images;
 

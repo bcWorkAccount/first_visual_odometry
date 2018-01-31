@@ -24,6 +24,10 @@ namespace fvo {
         float fScaleFactor;  // Scale factor between two pyramid level
         int nPyramidLevel;   // Pyramid level number
 
+        // ORB Matcher Threshold
+        //int ORBMatcher_TH_HIGH = 100;
+        //int ORBMatcher_TH_LOW = 50;
+
         // camera parameters
         float fx = 0;
         float fy = 0;

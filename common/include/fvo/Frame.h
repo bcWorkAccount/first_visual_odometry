@@ -33,9 +33,6 @@ public:   // methods
 
     virtual ~Frame();
 
-    // calculate image pyramid
-    void ComputeImagePyramid();
-
 };
 
 } // end of namespace

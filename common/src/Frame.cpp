@@ -19,10 +19,4 @@ namespace fvo {
     }
     Frame::~Frame(){};
 
-    void Frame::ComputeImagePyramid()
-    {
-        // Todo
-        LOG(WARNING) << "Todo: Frame::ComputeImagePyramid() " << endl;
-
-    }
 }
