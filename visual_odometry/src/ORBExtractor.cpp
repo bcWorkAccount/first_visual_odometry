@@ -483,7 +483,7 @@ namespace fvo {
         }
         mvecFeatureNumPerLevel[mnLevel - 1] = std::max(mnFeatures - nSumFeatures, 0);
 
-        //
+        //  复制训练的模板
         const int npoints = 512;
         const cv::Point *pattern0 = (const cv::Point *) bit_pattern_31_;
         std::copy(pattern0, pattern0 + npoints, std::back_inserter(mvecPattern));
@@ -508,8 +508,6 @@ namespace fvo {
             mvecUMax[v] = v0;
             ++v0;
         }
-        // Todo
-        LOG(WARNING) << "Todo : ORBExtractor::ORBExtractor() " << endl;
     }
 
     ORBExtractor::~ORBExtractor() {}
@@ -525,8 +523,7 @@ namespace fvo {
         assert( image.type() == CV_8UC1);
 
 
-        if ( mMethod == KeyPointMethod::OPENCV_ORB) {
-            // Todo
+        if ( mMethod == KeyPointMethod::QUAD_TREE_ORB) {
             std::vector<std::vector<cv::KeyPoint> > all_keypoints;
             // build the image pyramid
             computeImagePyramid(image);
@@ -535,15 +532,26 @@ namespace fvo {
             // compute the descriptors for all keypoints
             computeDescriptors( all_keypoints, output_keypoints, descriptors_array  );
 
+
+
         } else if (mMethod == KeyPointMethod::OPENCV_GFTT) {
             // Todo
             LOG(WARNING) << "Todo : ORBExtractor::detect()::OPENCV_GFTT" << endl;
-        }
 
-
-        if (mbComputeRotAndDesc) {
+        } else if ( mMethod == KeyPointMethod::OPENCV_ORB ) {
             // Todo
-            LOG(WARNING) << "Todo : ORBExtractor::detect()::mbComputeRotAndDesc" << endl;
+            cv::Ptr<cv::ORB> detector = cv::ORB::create(mnFeatures,
+                                                        G::fScaleFactor,
+                                                        G::nPyramidLevel
+            );
+            detector->detectAndCompute( image, cv::Mat(), output_keypoints,descriptors_array );
+
+        } else if ( mMethod == KeyPointMethod::OPENCV_SURF ) {
+            // Todo
+            LOG(WARNING) << "Todo : ORBExtractor::detect()::OPENCV_SURF" << endl;
+
+        } else {
+           LOG(FATAL) << "not right method " << endl;
         }
     }
 

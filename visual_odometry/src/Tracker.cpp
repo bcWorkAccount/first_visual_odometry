@@ -21,7 +21,12 @@ namespace fvo{
     Tracker::Tracker(  Camera::Ptr pCamera  ) {
         // initial the camera and orb extractor
         mpCamera = pCamera;
-        mpExtractor = make_shared<ORBExtractor>(ORBExtractor::OPENCV_GFTT);
+
+        // use the default OPENCV::ORB to detect
+        //    the alternative are: QUAD_TREE, SURF, GFTT
+        mpORBExtractor = make_shared<fvo::ORBExtractor>(ORBExtractor::OPENCV_ORB);
+        mpORBMatcher = make_shared<fvo::ORBMatcher>();
+        LOG(INFO) << "Use the ORBExtractor::OPENCV_ORB to detect features." << endl;
 
         mState = NO_IMAGES_YES;
     }
@@ -31,20 +36,26 @@ namespace fvo{
 
     SE3d Tracker::InsertStereo(const cv::Mat& imLeft, const cv::Mat& imRight, const double& timestamp)
     {
-        //Todo
-        LOG(WARNING) << "Todo Tracker::InsertStereo() " << endl;
+        //Todo : not completed
+        LOG(WARNING) << "Todo : Tracker::InsertStereo() " << endl;
 
         // create current frame
         mpCurrentFrame = shared_ptr<Frame>( new Frame(imLeft, imRight, timestamp, mpCamera));
-        mpCurrentFrame->ComputeImagePyramid();
 
         // Extract and compute stereo matching in current frame
-        // Extract the keypoints and compute the descriptors
+        // left & right key points , descriptors
         vector<cv::KeyPoint> leftKeyPoints, rightKeyPoints;
         cv::Mat  leftDescriptors, rightDescriptors;
-        // like: mpExtractor->detect(img, keypoints, descriptors);
-        mpExtractor->detect( mpCurrentFrame->mImgLeft, leftKeyPoints, leftDescriptors);
-        mpExtractor->detect( mpCurrentFrame->mImgRight, rightKeyPoints, rightDescriptors );
+        mpORBExtractor->detect( imLeft, leftKeyPoints, leftDescriptors);
+        mpORBExtractor->detect( imRight, rightKeyPoints, rightDescriptors );
+
+        vector<cv::DMatch> matches;
+        mpORBMatcher->ComputeStereoMatches(leftDescriptors, rightDescriptors, matches );
+        LOG(INFO) << "good/totoal :" << matches.size() << "/" << rightDescriptors.size() << endl;
+
+
+        // Todo : compute the camera orientation ( facing direction ) with triangle
+
 
         return SE3d();
     }
