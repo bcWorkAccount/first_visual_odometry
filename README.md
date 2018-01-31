@@ -35,8 +35,8 @@ we have already provided the kitti.yaml at config directory and you should downl
 
 We skip the groundtruth.txt parameters at this version of project because KITTI doesn't provide these data so you can type any thing for it.
 
-# Other things
-We reference following open soruce framework when we deisign the system architecture of fvo project because it's the first visual odometry of us and our team are newbie in this area:
+# Express Our Thanks
+Our team is newbie in SLAM area so we reference many excellent open soruce framework  architecture and source code orginization when we deisign the system architecture. Let us express our thanks to these authors:
 - ORB-SLAM2 
 - slambook
 - ygz-stereo-inertial
